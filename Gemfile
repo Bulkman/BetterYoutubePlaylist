@@ -31,6 +31,8 @@ gem 'omniauth-google-oauth2'
 
 gem 'certified'
 
+gem 'rest-client'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
