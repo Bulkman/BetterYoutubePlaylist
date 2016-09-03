@@ -4,8 +4,6 @@
   <title>Google Auth Example App</title>
   <%= stylesheet_link_tag    "default", media: "all", "data-turbolinks-track" => true %>
   <%= javascript_include_tag "default", "data-turbolinks-track" => true %>
-  <%=stylesheet_link_tag 'application.css' %>
-
   <%= csrf_meta_tags %>
 </head>
 <body>
@@ -21,8 +19,8 @@
   <%= yield %>
 </div>
 <ul>
-  <% display_playlist.each do |entry|%>
-      <li><%= entry["snippets"]["localized"]["title"] %></li>
+  <% get_playlists.each do |item| %>
+      <li><%= item %></li>
   <% end %>
 </ul>
 
