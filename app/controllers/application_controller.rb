@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
 	protect_from_forgery with: :exception
 	helper_method :current_user
 	helper_method :get_playlists
+	helper_method :reset_auth_token
 	
 	def current_user
 		@current_user ||= User.find(session[:user_id]) if session[:user_id]
@@ -38,5 +39,14 @@ class ApplicationController < ActionController::Base
 		end
 		
 		res
+	end
+	
+	def reset_auth_token
+		RestClient.get(
+			"https://accounts.google.com/o/oauth2/revokes",
+			:params => {
+				:token => current_user.oauth_token
+			}
+		)
 	end
 end

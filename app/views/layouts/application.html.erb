@@ -16,14 +16,19 @@
   <% end %>
 </div>
 <div>
-  <%= yield %>
+  <!--<%= yield %>!-->
+  <ul>
+    <% get_playlists.each do |item| %>
+        <li><%= item %></li>
+    <% end %>
+  </ul>
 </div>
-<ul>
-  <% get_playlists.each do |item| %>
-      <li><%= item %></li>
-  <% end %>
-</ul>
 
+<div>
+  <% if current_user %>
+    <%= link_to "Reset token", "https://accounts.google.com/o/oauth2/revoke?token=#{current_user.oauth_token}" %>
+  <% end %>
+</div>
 
 </body>
 </html>
