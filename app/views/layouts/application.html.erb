@@ -2,33 +2,22 @@
 <html>
 <head>
   <title>Google Auth Example App</title>
-  <%= stylesheet_link_tag    "default", media: "all", "data-turbolinks-track" => true %>
-  <%= javascript_include_tag "default", "data-turbolinks-track" => true %>
+  <%= stylesheet_link_tag    "application.css", media: "all", "data-turbolinks-track" => true %>
+  <%= javascript_include_tag "application.js", "data-turbolinks-track" => true %>
+
   <%= csrf_meta_tags %>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
 </head>
 <body>
-<div class ="header">
-  <% if current_user %>
-      Signed in as <strong><%= current_user.name %></strong>!
-      <%= link_to "Sign out", signout_path, id: "sign_out" %>
-  <% else %>
-      <%= link_to "Sign in with Google", "/auth/google_oauth2", id: "sign_in" %>
-  <% end %>
-</div>
-<div>
-  <!--<%= yield %>!-->
-  <ul>
-    <% get_playlists.each do |item| %>
-        <li><%= item %></li>
-    <% end %>
-  </ul>
-</div>
 
-<div>
-  <% if current_user %>
-    <%= link_to "Reset token", "https://accounts.google.com/o/oauth2/revoke?token=#{current_user.oauth_token}" %>
-  <% end %>
-</div>
+<%= render 'layouts/header' %>
+
+<%= render 'layouts/content' %>
+
+<%= render 'layouts/footer' %>
+
+
 
 </body>
 </html>

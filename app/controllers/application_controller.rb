@@ -6,6 +6,11 @@ class ApplicationController < ActionController::Base
 	helper_method :current_user
 	helper_method :get_playlists
 	helper_method :reset_auth_token
+	helper_method :playlist_item_id
+	
+	def playlist_item_id
+		@playlist_item_id
+	end
 	
 	def current_user
 		@current_user ||= User.find(session[:user_id]) if session[:user_id]
@@ -28,7 +33,7 @@ class ApplicationController < ActionController::Base
 				case response.code
 					when 200
 						playlists_info = JSON.parse(response.to_str)["items"]
-						playlists_info.each { |entry| res << entry["snippet"]["localized"]["title"].html_safe }
+						playlists_info.each { |entry| res << entry }
 					else
 						res << "Result: #{result}".html_safe
 						res << "Response: #{response.to_str}".html_safe
@@ -38,6 +43,38 @@ class ApplicationController < ActionController::Base
 			}
 		end
 		
+		res
+	end
+	
+	def playlist
+		@playlist_id_item = params[:playlist_id]
+		render(:template => 'layouts/_content')
+	end
+	
+	def get_playlist
+		res=[]
+			if current_user && current_user.oauth_token.length > 0
+				RestClient.get(
+					"https://www.googleapis.com/youtube/v3/playlistItems",
+					:params => {
+						:part         	=> "snippet",
+						:id        		=> @@playlist_id_item,
+						:key         	=> "AIzaSyBfjsc4qFp_BkhjZ9PQgbxTwfzRAeUvmoM",
+						:access_token 	=> current_user.oauth_token
+					}
+				){ |response, request, result, &block|
+					case response.code
+						when 200
+							playlists_info = JSON.parse(response.to_str)["items"]
+							playlists_info.each { |entry| res << entry["snippet"]["title"] }
+						else
+							res << "Result: #{result}".html_safe
+							res << "Response: #{response.to_str}".html_safe
+							res << "Request: #{request}".html_safe
+							res << "Headers: #{response.raw_headers}".html_safe
+					end
+				}
+			end
 		res
 	end
 	

@@ -14,3 +14,14 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require_tree .
+
+
+        /*function Item_list() {
+            $.ajax({
+                    url: '/playlists',
+                    type: 'GET',
+                    data: { name: "John", location: "Boston" }
+
+            });
+        };
+    */

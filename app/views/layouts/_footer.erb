@@ -1,0 +1,5 @@
+<footer>
+  <% if current_user %>
+      <%= link_to "Reset token", "https://accounts.google.com/o/oauth2/revoke?token=#{current_user.oauth_token}" %>
+  <% end %>
+</footer>
