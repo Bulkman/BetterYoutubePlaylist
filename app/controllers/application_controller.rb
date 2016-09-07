@@ -7,6 +7,8 @@ class ApplicationController < ActionController::Base
 	helper_method :get_playlists
 	helper_method :reset_auth_token
 	helper_method :playlist_item_id
+	helper_method :get_playlist
+	
 	
 	def playlist_item_id
 		@playlist_item_id
@@ -47,7 +49,7 @@ class ApplicationController < ActionController::Base
 	end
 	
 	def playlist
-		@playlist_id_item = params[:playlist_id]
+		@playlist_item_id = params[:playlist_id]
 		render(:template => 'layouts/_content')
 	end
 	
@@ -58,7 +60,8 @@ class ApplicationController < ActionController::Base
 					"https://www.googleapis.com/youtube/v3/playlistItems",
 					:params => {
 						:part         	=> "snippet",
-						:id        		=> @@playlist_id_item,
+						:playlistId     => @playlist_item_id,
+						:maxResults     => 50,
 						:key         	=> "AIzaSyBfjsc4qFp_BkhjZ9PQgbxTwfzRAeUvmoM",
 						:access_token 	=> current_user.oauth_token
 					}
