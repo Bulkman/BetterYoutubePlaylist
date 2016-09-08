@@ -77,7 +77,7 @@ class ApplicationController < ActionController::Base
 						playlist_items_array = playlists_info["items"]
 						
 						if playlist_items_array != nil
-							playlist_items_array.each { |entry| res << entry["snippet"]["title"] }
+							playlist_items_array.each { |entry| res << entry["snippet"] }
 						end
 						
 						if playlists_info.has_key?("nextPageToken") && old_token != token

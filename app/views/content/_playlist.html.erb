@@ -1,3 +1,12 @@
+<script>
+function videoframe(id) {
+  $("#ytplayer").attr("src", "http://www.youtube.com/embed/" + id + "?autoplay=1&origin=http://example.com");
+}
+</script>
+
+
+
+
 <div id="playlist_items">
   <% if current_playlist_id != nil && current_playlist_id.length > 0 %>
       <div class="col-md-3">
@@ -6,9 +15,9 @@
             <div class="list-group">
               <a href="#" class="list-group-item active">LIST ITEM</a>
               <% count = 1 %>
-              <% playlist_items.each do |video_title| %>
-                  <a href="#" class="list-group-item list-group-item-action ">
-                    <%= count.to_s << ". " << video_title %>
+              <% playlist_items.each do |video| %>
+                  <a href="#" class="list-group-item list-group-item-action" onclick="videoframe('<%= video['resourceId']['videoId']%>')">
+                    <%= count.to_s << ". " << video["title"] %>
                   </a>
                   <% count+=1 %>
               <%end %>
