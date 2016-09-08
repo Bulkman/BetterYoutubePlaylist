@@ -12,8 +12,8 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require turbolinks
-//= require_tree .
+//require turbolinks
+//require_tree .
 
 
         /*function Item_list() {

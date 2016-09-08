@@ -1,23 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Google Auth Example App</title>
-  <%= stylesheet_link_tag    "application.css", media: "all", "data-turbolinks-track" => true %>
-  <%= javascript_include_tag "application.js", "data-turbolinks-track" => true %>
+  <title>Better Youtube Playlist</title>
+  <!--<%= stylesheet_link_tag    "default", media: "all", "data-turbolinks-track" => true %>-->
+  <!--<%= javascript_include_tag "default", "data-turbolinks-track" => true %>-->
+  <%= stylesheet_link_tag    "application" %>
+  <%= javascript_include_tag "application", "application" %>
 
   <%= csrf_meta_tags %>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
 </head>
-<body>
-
-<%= render :partial => 'layouts/header' %>
-
-<%= render :partial => 'content/content' %>
-
-<%= render :partial => 'layouts/footer' %>
-
-
-
-</body>
+  <body>
+    <%= render :partial => 'content/header' %>
+    <%= render :partial => 'content/content' %>
+    <%= render :partial => 'content/footer' %>
+  </body>
 </html>

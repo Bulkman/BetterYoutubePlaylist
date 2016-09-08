@@ -9,13 +9,12 @@
 #end
 
 BetterYoutubePlaylist::Application.routes.draw do
+  root to: "application#index"
+  
   get 'auth/:provider/callback', to: 'sessions#create'
   get 'auth/failure',            to: redirect('/')
   get 'signout',                 to: 'sessions#destroy', as: 'signout'
-  get '#',    to: 'application#playlist', as: 'set_playlist_id'
+  get 'playlist',                to: 'application#playlist', as: 'set_playlist_id',  defaults: { format: 'js' }
   
   resources :sessions, only: [:create, :destroy]
-  resource :home, only: [:show]
-  
-  root to: "home#show"
 end
