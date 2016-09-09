@@ -4,10 +4,10 @@ require 'json'
 class ApplicationController < ActionController::Base
 	#protect_from_forgery with: :exception
 	helper_method :current_user
-	helper_method :get_playlists
+	helper_method :download_playlists
 	helper_method :reset_auth_token
-	helper_method :current_playlist_id
-	helper_method :playlist_items
+	helper_method :download_playlist_items
+	helper_method :playlists
 	
 	@@API_KEY = "AIzaSyBfjsc4qFp_BkhjZ9PQgbxTwfzRAeUvmoM"
 	@@CLIENT_ID = "296473228932-2stolrcmus6rlv2efi3218umpr026cmq.apps.googleusercontent.com"
@@ -16,11 +16,9 @@ class ApplicationController < ActionController::Base
 	################################
 	###### VARIABLES GET & SET #####
 	################################
-	
-	def current_playlist_id
-		@current_playlist_id
+	def playlists
+		@playlists
 	end
-	
 	def current_user
 		@current_user ||= User.find(session[:user_id]) if session[:user_id]
 	end
@@ -29,8 +27,10 @@ class ApplicationController < ActionController::Base
 	###### UTILITY METHODS #####
 	############################
 	
+	
+	
 	# https://developers.google.com/youtube/v3/docs/playlists/list#response
-	def get_playlists
+	def download_playlists
 		res = []
 		
 		if current_user && current_user.oauth_token.length > 0
@@ -49,8 +49,12 @@ class ApplicationController < ActionController::Base
 			){ |response, request, result, &block|
 				case response.code
 					when 200
-						playlists_info = JSON.parse(response.to_str)["items"]
-						playlists_info.each { |entry| res << entry }
+						playlists_info = JSON.parse(response.to_str)
+						playlists_info["items"].each { |entry|
+							entry["content"] = download_playlist_items(entry["id"])
+							res << entry
+						}
+
 					else
 						error = ""
 						error << "Result: #{result}".html_safe
@@ -62,10 +66,10 @@ class ApplicationController < ActionController::Base
 			}
 		end
 		
-		res
+		@playlists = res
 	end
 	
-	def playlist_items(token = "")
+	def download_playlist_items(id_p, token = "")
 		res = []
 		
 		if current_user && current_user.oauth_token.length > 0
@@ -77,7 +81,7 @@ class ApplicationController < ActionController::Base
 				"https://www.googleapis.com/youtube/v3/playlistItems",
 				:params => {
 					:part          => "snippet",
-					:playlistId    => @current_playlist_id,
+					:playlistId    => id_p,
 					:maxResults    => 50,
 					:pageToken 	   => token,
 					:key           => @@API_KEY,
@@ -96,7 +100,7 @@ class ApplicationController < ActionController::Base
 						end
 						
 						if playlists_info.has_key?("nextPageToken") && old_token != token
-							res.concat playlist_items(token)
+							res.concat download_playlist_items(token)
 						end
 					
 					else
@@ -157,14 +161,5 @@ class ApplicationController < ActionController::Base
 	######################################
 	def index
 		render :layout => false, :template => "layouts/application"
-	end
-	
-	def playlist
-		@current_playlist_id = params[:playlist_id]
-		
-		#render(:template => 'content/_playlist')
-		respond_to do |format|
-			format.js { render layout: false, content_type: 'text/javascript', :template => "content/playlist" }
-		end
 	end
 end

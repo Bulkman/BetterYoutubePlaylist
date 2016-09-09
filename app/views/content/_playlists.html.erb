@@ -1,11 +1,23 @@
+<script>
+  function showplaylist(index) {
+    $("#playlist_items").html("<%= escape_javascript(render :partial => 'content/playlist', :locals => {:index => 'index'})%>");
+
+  }
+</script>
+
+
 <div class="col-md-3">
   <div class="row">
     <div class="col-md-12">
       <div class="list-group">
         <a href="#" class="list-group-item active">TITLE LIST</a>
-        <% get_playlists.each do |playlists_youtube| %>
-            <%= link_to( options = {:controller => "application", :action => "playlist", :playlist_id => playlists_youtube["id"], :remote => true}, html_options = {:remote => true, :class => "list-group-item list-group-item-action"} ) do playlists_youtube["snippet"]["localized"]["title"] end %>
-        <%end %>
+        <%i=0%>
+          <% download_playlists.each do |playlists_youtube| %>
+              <a href="#" class="list-group-item list-group-item-action" onclick="showplaylist('<%= i %>')">
+                <%= playlists_youtube["snippet"]["localized"]["title"] %>
+              </a>
+            <% i +=1%>
+          <%end %>
       </div>
     </div>
   </div>
