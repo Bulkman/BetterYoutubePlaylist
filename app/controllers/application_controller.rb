@@ -9,6 +9,10 @@ class ApplicationController < ActionController::Base
 	helper_method :current_playlist_id
 	helper_method :playlist_items
 	
+	@@API_KEY = "AIzaSyBfjsc4qFp_BkhjZ9PQgbxTwfzRAeUvmoM"
+	@@CLIENT_ID = "296473228932-2stolrcmus6rlv2efi3218umpr026cmq.apps.googleusercontent.com"
+	@@SECRET_KEY = "kAFGvMEsCBFINL_QFOq0bi-I"
+	
 	################################
 	###### VARIABLES GET & SET #####
 	################################
@@ -30,12 +34,16 @@ class ApplicationController < ActionController::Base
 		res = []
 		
 		if current_user && current_user.oauth_token.length > 0
+			if refresh_token_if_expired != "OK"
+				return res
+			end
+			
 			RestClient.get(
 				"https://www.googleapis.com/youtube/v3/playlists",
 				:params => {
 					:part         => "snippet",
 					:mine         => true,
-					:key          => "AIzaSyBfjsc4qFp_BkhjZ9PQgbxTwfzRAeUvmoM",
+					:key          => @@API_KEY,
 					:access_token => current_user.oauth_token
 				}
 			){ |response, request, result, &block|
@@ -44,10 +52,12 @@ class ApplicationController < ActionController::Base
 						playlists_info = JSON.parse(response.to_str)["items"]
 						playlists_info.each { |entry| res << entry }
 					else
-						res << "Result: #{result}".html_safe
-						res << "Response: #{response.to_str}".html_safe
-						res << "Request: #{request}".html_safe
-						res << "Headers: #{response.raw_headers}".html_safe
+						error = ""
+						error << "Result: #{result}".html_safe
+						error << "Response: #{response.to_str}".html_safe
+						error << "Request: #{request}".html_safe
+						error << "Headers: #{response.raw_headers}".html_safe
+						puts error
 				end
 			}
 		end
@@ -57,7 +67,12 @@ class ApplicationController < ActionController::Base
 	
 	def playlist_items(token = "")
 		res = []
+		
 		if current_user && current_user.oauth_token.length > 0
+			if refresh_token_if_expired != "OK"
+				return res
+			end
+			
 			RestClient.get(
 				"https://www.googleapis.com/youtube/v3/playlistItems",
 				:params => {
@@ -65,7 +80,7 @@ class ApplicationController < ActionController::Base
 					:playlistId    => @current_playlist_id,
 					:maxResults    => 50,
 					:pageToken 	   => token,
-					:key           => "AIzaSyBfjsc4qFp_BkhjZ9PQgbxTwfzRAeUvmoM",
+					:key           => @@API_KEY,
 					:access_token  => current_user.oauth_token
 				}
 			) { |response, request, result, &block|
@@ -85,11 +100,12 @@ class ApplicationController < ActionController::Base
 						end
 					
 					else
-						res.clear
-						res << "Result: #{result}".html_safe
-						res << "Response: #{response.to_str}".html_safe
-						res << "Request: #{request}".html_safe
-						res << "Headers: #{response.raw_headers}".html_safe
+						error = ""
+						error << "Result: #{result}".html_safe
+						error << "Response: #{response.to_str}".html_safe
+						error << "Request: #{request}".html_safe
+						error << "Headers: #{response.raw_headers}".html_safe
+						puts error
 				end
 			}
 		end
@@ -105,11 +121,42 @@ class ApplicationController < ActionController::Base
 		)
 	end
 	
+	def refresh_token_if_expired
+		res = "OK"
+		
+		if Time.at(current_user.oauth_expires_at) < Time.now
+			data = {
+				:client_id => @@CLIENT_ID,
+				:client_secret => @@SECRET_KEY,
+				:refresh_token => current_user.refresh_token,
+				:grant_type => "refresh_token"
+			}
+			
+			RestClient.post("https://accounts.google.com/o/oauth2/token", data) { |response, request, result, &block|
+				case response.code
+					when 200
+						response = JSON.parse(response.to_str)
+						if response["access_token"].present?
+							current_user.oauth_token = response["access_token"]
+						end
+					else
+						res << "Result: #{result}\n"
+						res << "Response: #{response.to_str}\n"
+						res << "Request: #{request}\n"
+						res << "Headers: #{response.raw_headers}\n"
+						puts res
+				end
+			}
+		end
+	
+		res
+	end
+	
 	######################################
 	###### USER ACTION METHODS BELOW #####
 	######################################
 	def index
-		render "layouts/application"
+		render :layout => false, :template => "layouts/application"
 	end
 	
 	def playlist
