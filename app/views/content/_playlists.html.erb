@@ -1,22 +1,15 @@
 <script>
   function showplaylist(index) {
-
-    //$("#playlist_items").html(str);
-
     $.ajax ({
       url: '/show_playlist',
       type: 'post',
       data: {pindex: index},
       dataType: 'html',
       success: function (data){
-        $("#playlist_items").ks(data);
-        alert(data);
-
+        $("#playlist_items").html(data);
       },
       error: function(jqXHR, status,error){ console.log (status); console.log (error); console.log(jqXHR.responseText)}
-
     });
-    //alert(s);
   }
 </script>
 

@@ -106,7 +106,7 @@ class ApplicationController < ActionController::Base
 						end
 						
 						if playlists_info.has_key?("nextPageToken") && old_token != token
-							res.concat download_playlist_items(token)
+							res.concat download_playlist_items(id_p, token)
 						end
 					
 					else
@@ -174,8 +174,7 @@ class ApplicationController < ActionController::Base
 	def show_playlist
 		index = params[:pindex]
 		respond_to do |format|
-			format.js{ render :tamplate => "contant/playlist", :local => {:index => index}}
-			format.html{ render layout: false, content_type:'text/javascript', :tamplate => "contant/playlist", :local => {:index => index}}
+			format.html{ render :partial => "content/playlist", :locals => {:index => index}}
 		end
 	end
 end
