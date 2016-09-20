@@ -4,30 +4,35 @@ require 'json'
 class ApplicationController < ActionController::Base
 	#protect_from_forgery with: :exception
 	helper_method :current_user
-	helper_method :download_playlists
 	helper_method :reset_auth_token
-	helper_method :download_playlist_items
 	helper_method :playlists
 	
-	@@API_KEY = "AIzaSyBfjsc4qFp_BkhjZ9PQgbxTwfzRAeUvmoM"
-	@@CLIENT_ID = "296473228932-2stolrcmus6rlv2efi3218umpr026cmq.apps.googleusercontent.com"
-	@@SECRET_KEY = "kAFGvMEsCBFINL_QFOq0bi-I"
+	before_action :start
 	
-	################################
-	###### VARIABLES GET & SET #####
-	################################
+	API_KEY = "AIzaSyBfjsc4qFp_BkhjZ9PQgbxTwfzRAeUvmoM"
+	CLIENT_ID = "296473228932-2stolrcmus6rlv2efi3218umpr026cmq.apps.googleusercontent.com"
+	SECRET_KEY = "kAFGvMEsCBFINL_QFOq0bi-I"
+	
+	###############################
+	##### VARIABLES GET & SET #####
+	###############################
+	
 	def playlists
 		@playlists
 	end
+	
 	def current_user
 		@current_user ||= User.find(session[:user_id]) if session[:user_id]
 	end
 	
-	############################
-	###### UTILITY METHODS #####
-	############################
+	###########################
+	##### UTILITY METHODS #####
+	###########################
 	
-	
+	def start
+		@playlists = download_playlists
+		refresh_token_if_expired
+	end
 	
 	# https://developers.google.com/youtube/v3/docs/playlists/list#response
 	def download_playlists
@@ -43,7 +48,7 @@ class ApplicationController < ActionController::Base
 				:params => {
 					:part         => "snippet",
 					:mine         => true,
-					:key          => @@API_KEY,
+					:key          => API_KEY,
 					:access_token => current_user.oauth_token
 				}
 			){ |response, request, result, &block|
@@ -66,9 +71,10 @@ class ApplicationController < ActionController::Base
 			}
 		end
 		
-		@playlists = res
+		res
 	end
 	
+	# https://developers.google.com/youtube/v3/docs/playlistItems/list
 	def download_playlist_items(id_p, token = "")
 		res = []
 		
@@ -84,7 +90,7 @@ class ApplicationController < ActionController::Base
 					:playlistId    => id_p,
 					:maxResults    => 50,
 					:pageToken 	   => token,
-					:key           => @@API_KEY,
+					:key           => API_KEY,
 					:access_token  => current_user.oauth_token
 				}
 			) { |response, request, result, &block|
@@ -130,8 +136,8 @@ class ApplicationController < ActionController::Base
 		
 		if Time.at(current_user.oauth_expires_at) < Time.now
 			data = {
-				:client_id => @@CLIENT_ID,
-				:client_secret => @@SECRET_KEY,
+				:client_id => CLIENT_ID,
+				:client_secret => SECRET_KEY,
 				:refresh_token => current_user.refresh_token,
 				:grant_type => "refresh_token"
 			}
@@ -156,9 +162,10 @@ class ApplicationController < ActionController::Base
 		res
 	end
 	
-	######################################
-	###### USER ACTION METHODS BELOW #####
-	######################################
+	#####################################
+	##### USER ACTION METHODS BELOW #####
+	#####################################
+	
 	def index
 		render :layout => false, :template => "layouts/application"
 	end
