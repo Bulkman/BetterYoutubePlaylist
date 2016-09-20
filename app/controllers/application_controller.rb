@@ -134,7 +134,7 @@ class ApplicationController < ActionController::Base
 	def refresh_token_if_expired
 		res = "OK"
 		
-		if Time.at(current_user.oauth_expires_at) < Time.now
+		if current_user && Time.at(current_user.oauth_expires_at) < Time.now
 			data = {
 				:client_id => CLIENT_ID,
 				:client_secret => SECRET_KEY,

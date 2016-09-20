@@ -6,7 +6,7 @@
 
 <% index ||= 0 %>
 <div id="playlist_items">
-  <% if playlists != nil && playlists[index.to_i]["id"] != nil && playlists[index.to_i]["id"].length > 0 %>
+  <% if playlists != nil && !playlists.empty? && playlists[index.to_i]["id"] != nil && playlists[index.to_i]["id"].length > 0 %>
       <div class="col-md-3">
         <div class="row">
           <div class="col-md-12">
