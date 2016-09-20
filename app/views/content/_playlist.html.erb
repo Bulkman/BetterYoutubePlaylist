@@ -1,11 +1,12 @@
-<script>
-  function videoframe(id) {
-    $("#ytplayer").attr("src", "http://www.youtube.com/embed/" + id + "?autoplay=1&origin=http://example.com");
-  }
-</script>
-
-<% index ||= 0 %>
 <div id="playlist_items">
+
+  <script>
+    function videoframe(id) {
+      $("#ytplayer").attr("src", "http://www.youtube.com/embed/" + id + "?autoplay=1&origin=http://example.com");
+    }
+  </script>
+
+  <% index ||= 0 %>
   <% if playlists != nil && !playlists.empty? && playlists[index.to_i]["id"] != nil && playlists[index.to_i]["id"].length > 0 %>
       <div class="col-md-3">
         <div class="row">

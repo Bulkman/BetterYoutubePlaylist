@@ -1,7 +1,21 @@
 <script>
   function showplaylist(index) {
-    var str = "<%= escape_javascript(render :partial => 'content/playlist', :locals => {:index => 'index'})%>";
-    $("#playlist_items").html(str);
+
+    //$("#playlist_items").html(str);
+
+    $.ajax ({
+      url: '/show_playlist',
+      type: 'post',
+      data: {pindex: index},
+      dataType: 'html',
+      success: function (data){
+        $("#playlist_items").ks(data);
+        alert(data);
+
+      },
+      error: function(jqXHR, status,error){ console.log (status); console.log (error); console.log(jqXHR.responseText)}
+
+    });
     //alert(s);
   }
 </script>

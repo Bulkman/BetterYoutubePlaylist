@@ -169,4 +169,13 @@ class ApplicationController < ActionController::Base
 	def index
 		render :layout => false, :template => "layouts/application"
 	end
+	
+	
+	def show_playlist
+		index = params[:pindex]
+		respond_to do |format|
+			format.js{ render :tamplate => "contant/playlist", :local => {:index => index}}
+			format.html{ render layout: false, content_type:'text/javascript', :tamplate => "contant/playlist", :local => {:index => index}}
+		end
+	end
 end
