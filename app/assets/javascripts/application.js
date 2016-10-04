@@ -17,11 +17,11 @@
 
 
         /*function Item_list() {
-            $.ajax({
-                    url: '/playlists',
-                    type: 'GET',
-                    data: { name: "John", location: "Boston" }
+         $.ajax({
+         url: '/playlists',
+         type: 'GET',
+         data: { name: "John", location: "Boston" }
 
-            });
-        };
+         });
+         };
     */

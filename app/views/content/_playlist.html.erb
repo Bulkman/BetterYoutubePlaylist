@@ -2,22 +2,27 @@
 
   <script>
     function videoframe(id) {
-      $("#ytplayer").attr("src", "http://www.youtube.com/embed/" + id + "?autoplay=1&origin=http://example.com");
+
+
+      var nodeList = Array.prototype.slice.call( document.getElementById('list_items').children );
+      current_video_index = nodeList.indexOf(document.getElementById(id)) - 1;
+      player.loadVideoById( id , 0, "large");
     }
   </script>
 
   <% index ||= 0 %>
   <% if playlists != nil && !playlists.empty? && playlists[index.to_i]["id"] != nil && playlists[index.to_i]["id"].length > 0 %>
-            <div class="list-group">
-              <div>
-                <a href="#" class="list-group-item active">LIST ITEM</a>
-                <div class="btn-group" role="group" aria-label="...">
-                  <button type="button" class="btn btn-default">Left</button>
-                </div>
-              </div>
+            <div class="list-group" id="list_items">
+                <a href="#" class="list-group-item active">LIST ITEMS
+                  <div class="btn-group" role="group" aria-label="...">
+                    <button type="button" class="btn btn-default">Left</button>
+                    <button type="button" class="btn btn-default">play</button>
+                    <button type="button" class="btn btn-default">right</button>
+                  </div>
+                </a>
               <% count = 1 %>
               <% playlists[index.to_i]["content"].each do |video| %>
-                  <a href="#" class="list-group-item list-group-item-action" onclick="videoframe('<%= video['resourceId']['videoId']%>')">
+                  <a href="#" class="list-group-item list-group-item-action" onclick="videoframe('<%= video['resourceId']['videoId']%>')" id="<%= video['resourceId']['videoId']%>">
                     <%= count.to_s << ". " << video["title"] %>
                   </a>
                   <% count+=1 %>
