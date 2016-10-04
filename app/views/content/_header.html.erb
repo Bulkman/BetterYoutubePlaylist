@@ -1,16 +1,18 @@
-<div class ="header">
-  <% if current_user %>
-      Signed in as <strong><%= current_user.name %></strong>!
+<header class ="row">
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <% if current_user %>
+        Signed in as <strong><%= current_user.name %></strong>!
 
-      <button type="button">
-        <%= image_tag ("/assets/icons/btn_google_dark_disabled_ios.svg") %>
-        <%= link_to "Sign out", signout_path, id: "sign_out" %>
-      </button>
+        <button type="button">
+          <%= image_tag ("/assets/icons/btn_google_dark_disabled_ios.svg") %>
+          <%= link_to "Sign out", signout_path, id: "sign_out" %>
+        </button>
 
-  <% else %>
-      <button type="button">
-        <span class="icon"></span>
-        <%= link_to "Sign in with Google", "/auth/google_oauth2", id: "sign_in" %>
-      </button>
-  <% end %>
-</div>
+    <% else %>
+        <button type="button">
+          <span class="icon"></span>
+          <%= link_to "Sign in with Google", "/auth/google_oauth2", id: "sign_in" %>
+        </button>
+    <% end %>
+  </div>
+</header>

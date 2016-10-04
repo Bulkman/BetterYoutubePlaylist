@@ -1,4 +1,4 @@
-<div id="playlist_items">
+<div id="playlist_items" class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
 
   <script>
     function videoframe(id) {
@@ -8,11 +8,13 @@
 
   <% index ||= 0 %>
   <% if playlists != nil && !playlists.empty? && playlists[index.to_i]["id"] != nil && playlists[index.to_i]["id"].length > 0 %>
-      <div class="col-md-3">
-        <div class="row">
-          <div class="col-md-12">
             <div class="list-group">
-              <a href="#" class="list-group-item active">LIST ITEM</a>
+              <div>
+                <a href="#" class="list-group-item active">LIST ITEM</a>
+                <div class="btn-group" role="group" aria-label="...">
+                  <button type="button" class="btn btn-default">Left</button>
+                </div>
+              </div>
               <% count = 1 %>
               <% playlists[index.to_i]["content"].each do |video| %>
                   <a href="#" class="list-group-item list-group-item-action" onclick="videoframe('<%= video['resourceId']['videoId']%>')">
@@ -21,8 +23,5 @@
                   <% count+=1 %>
               <% end %>
             </div>
-          </div>
-        </div>
-      </div>
   <% end %>
 </div>
